@@ -39,15 +39,23 @@ bool List::writeRecordsToFile(std::string file)
 		std::cout << "Could not open file" << std::endl;
 		return false;
 	}
-	std::string name;
+	std::string record;
 	for (int i = 0; i < counter; i++)
 	{
-		name = records[i]->getName();
-		name.at(name.find(" ")) = '_'; //replaces space with '_'
-		dataFile << name << "\n";
+		record = records[i]->getName();
+		record.at(record.find(" ")) = '_'; //replaces space with '_'
+		dataFile << record << "\n";
 	}
 	dataFile.close();
 	return true;
+}
+
+void List::displayAllRecords()
+{
+	for (int i = 0; i < counter; i++)
+	{
+		std::cout << (i + 1) << ". " << records[i]->getName() << std::endl;
+	}
 }
 
 void List::swap(int n1, int n2)

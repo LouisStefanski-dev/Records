@@ -10,9 +10,10 @@ public:
 	List() { counter = 0; };
 	//remember to delete records
 	bool add(std::string firstName, std::string lastName);
-	CustomerRecord& getRecord(int pos) { return (*records[pos]); };
 	bool readInRecords(std::string file);
 	bool writeRecordsToFile(std::string file);
+	void displayAllRecords();
+	CustomerRecord& getRecord(int pos) { return (*records[pos]); };
 private:
 	int counter = 0;
 	CustomerRecord* records[recordsMaxSize];
