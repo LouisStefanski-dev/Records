@@ -31,6 +31,25 @@ bool List::readInRecords(std::string file)
 	return true;
 }
 
+bool List::writeRecordsToFile(std::string file)
+{
+	std::fstream dataFile(file);
+	if (!dataFile)
+	{
+		std::cout << "Could not open file" << std::endl;
+		return false;
+	}
+	std::string name;
+	for (int i = 0; i < counter; i++)
+	{
+		name = records[i]->getName();
+		name.at(name.find(" ")) = '_'; //replaces space with '_'
+		dataFile << name << "\n";
+	}
+	dataFile.close();
+	return true;
+}
+
 void List::swap(int n1, int n2)
 {
 	CustomerRecord* temp = records[n1];
