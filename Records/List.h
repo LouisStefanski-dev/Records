@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include "CustomerRecord.h"
 #include "Variables.h"
 
@@ -10,6 +11,8 @@ public:
 	//remember to delete records
 	bool add(std::string firstName, std::string lastName);
 	CustomerRecord& getRecord(int pos) { return (*records[pos]); };
+	bool readInRecords(std::string file);
+	void writeRecordsToFile(std::string file);
 private:
 	int counter = 0;
 	CustomerRecord* records[recordsMaxSize];

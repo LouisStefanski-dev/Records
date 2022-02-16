@@ -12,6 +12,25 @@ bool List::add(std::string firstName, std::string lastName)
 	return true;
 }
 
+bool List::readInRecords(std::string file)
+{
+	std::ifstream dataFile(file);
+	if (!dataFile)
+	{
+		std::cout << "Could not open file" << std::endl;
+		return false;
+	}
+	std::string record;
+	std::size_t pos;
+	while (dataFile >> record)
+	{
+		pos = record.find("_");
+		add(record.substr(0, pos), record.substr(pos + 1)); //splits names by delimiter pos
+	}
+	dataFile.close();
+	return true;
+}
+
 void List::swap(int n1, int n2)
 {
 	CustomerRecord* temp = records[n1];

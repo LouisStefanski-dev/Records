@@ -4,9 +4,7 @@
 int main()
 {
 	List newList;
-	newList.add("louis", "s");
-	newList.add("bill", "z");
-
-	std::cout << newList.getRecord(0).getName() << std::endl;
+	if (!newList.readInRecords("names.txt")) { return 1; }; //breaks if data file is not read able to be opened
+	std::cout << newList.getRecord(1).getName() << std::endl;
 	return 0;
 }
