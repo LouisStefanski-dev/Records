@@ -2,10 +2,10 @@
 
 bool List::add(std::string firstName, std::string lastName)
 {
-	// 1000 is added to counter to meet lower bound of recordId
-	CustomerRecord* newCustomer = new CustomerRecord(firstName, lastName, counter + 1000);
-	if (counter < recordsMaxSize )
+	if (counter < recordsMaxSize)
 	{
+		// 1000 is added to counter to meet lower bound of recordId
+		CustomerRecord* newCustomer = new CustomerRecord(firstName, lastName, counter + 1000);
 		records[counter] = newCustomer;
 	}
 	counter++;
@@ -52,10 +52,12 @@ bool List::writeRecordsToFile(std::string file)
 
 void List::displayAllRecords()
 {
+	std::cout << "\n-------------------------------------------------------------------------\n\n";
 	for (int i = 0; i < counter; i++)
 	{
 		std::cout << (i + 1) << ". " << records[i]->getName() << std::endl;
 	}
+	std::cout << "\n-------------------------------------------------------------------------\n";
 }
 
 void List::swap(int n1, int n2)
