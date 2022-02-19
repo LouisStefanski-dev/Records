@@ -29,9 +29,17 @@ bool handleInput(K& list)
 	case 1:
 		//add customer input
 	{
-		std::string firstName, lastName;
-		getInput("Customers first name: ", firstName);
-		getInput("Customers last name: ", lastName);
+		std::string firstName, lastName = "";
+		while (true)
+		{
+			getInput("Customers first name: ", firstName);
+			if (!(firstName.length() == 0)) { break; };
+		}
+		while (true)
+		{
+			getInput("Customers last name: ", lastName);
+			if (!(lastName.length() == 0)) { break; };
+		}
 		list.add(firstName, lastName);
 		break;
 	}
@@ -48,6 +56,7 @@ bool handleInput(K& list)
 		//edit record
 		break;
 	default:
+		//when input is invalid
 		break;
 	}
 	return true;
