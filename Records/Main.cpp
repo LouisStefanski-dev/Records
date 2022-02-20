@@ -1,6 +1,12 @@
 #include "List.h"
 #include <iostream>
 
+
+//TODO 
+//Work on removing spaces
+//Sorting
+
+
 /// <summary>
 /// getInput is a generic function that has a void return type. This function takes in a prompt(type K) and a response(type Z) where response is passed by reference
 /// and stores the 'answer'
@@ -33,7 +39,7 @@ bool handleInput(K& list)
 		while (true)
 		{
 			getInput("Customers first name: ", firstName);
-			if (!(firstName.length() == 0)) { break; };
+			if (firstName.length() != 0) { break; };
 		}
 		while (true)
 		{
@@ -46,12 +52,22 @@ bool handleInput(K& list)
 	case 2:
 		list.displayAllRecords();
 		break;
-	case 3:
-		//search by id
+	case 3: //search by id
+	{
+		int id;
+		getInput("Enter ID: ", id);
+		std::cout << list.search(id) << std::endl;
 		break;
-	case 4:
-		//search by name
+	}
+	case 4: //search by name
+	{
+		std::string name;
+		std::cout << "Enter name: ";
+		std::cin.ignore();
+		std::getline(std::cin, name);
+		std::cout << list.search(name) << std::endl;
 		break;
+	}
 	case 5:
 		//edit record
 		break;

@@ -1,6 +1,3 @@
-Louis_s
-Bill_p
-Adam_Zelinski
-Aaron_Marter
-Adam_Meyers
-Oscar_Willington
+Adam_Zelinski,1000
+Carter_A,1001
+Louis_s,1002

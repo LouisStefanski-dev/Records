@@ -10,7 +10,7 @@ public:
 	~CustomerRecord();
 	std::string getName(); 
 	bool getActivityStatus() { return recordActivityStatus; };
-	bool getRecordId() { return recordId; };
+	int getRecordId() { return recordId; };
 	RECORDTYPE getRecordType() { return recordType; };
 	int getFirstTransactionNumber() { return firstTransactionNumber; };
 	int getLastTransactionNumber() { return lastTransactionNumber; };
