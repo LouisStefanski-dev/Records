@@ -15,52 +15,6 @@ bool List::add(std::string firstName, std::string lastName, int recordId)
 	return true;
 }
 
-bool List::readInRecords(std::string file) //uses ',' as a delimiter 
-{
-	std::ifstream dataFile(file);
-	if (!dataFile)
-	{
-		std::cout << "Could not open file" << std::endl;
-		return false;
-	}
-	std::string record;
-	while (std::getline(dataFile, record))
-	{
-		parseRecord(record);
-	}
-	dataFile.close();
-	return true;
-}
-
-bool List::writeRecordsToFile(std::string file)
-{
-	std::fstream dataFile(file);
-	if (!dataFile)
-	{
-		std::cout << "Could not open file" << std::endl;
-		return false;
-	}
-	std::string record;
-	for (int i = 0; i < counter; i++)
-	{
-		record = records[i].getName();
-		record.at(record.find(" ")) = '_'; //replaces space with '_'
-		dataFile << record << "," << records[i].recordId << "\n";
-	}
-	dataFile.close();
-	return true;
-}
-
-void List::displayAllRecords()
-{
-	std::cout << "\n-------------------------------------------------------------------------\n\n";
-	for (int i = 0; i < counter; i++)
-	{
-		std::cout << (i + 1) << ". " << records[i].getName() << std::endl;
-	}
-	std::cout << "\n-------------------------------------------------------------------------\n";
-}
-
 bool List::search(std::string name)
 {
 	return search(name, 0, counter);
@@ -115,27 +69,4 @@ void List::swap(int n1, int n2)
 	CustomerRecord temp = records[n1];
 	records[n1] = records[n2];
 	records[n2] = temp;
-}
-
-//parses record into an array deliminated by ',' then adds record to records
-//numOfExpectedReturnVals is stored in Variables.h
-void List::parseRecord(std::string record)
-{
-	int posInArray = 0;
-	//length of array is the number of expected return values 
-	std::string dataReadIn[numOfExpectedReturnVals];
-	while (true)
-	{
-		if (record.find(",") == std::string::npos)
-		{ 
-			dataReadIn[posInArray] = record.substr(0);
-			break;
-		};
-		dataReadIn[posInArray] = record.substr(0, record.find(","));
-		posInArray++;
-		record = record.substr(record.find(",") + 1);
-	}
-	std::string name = dataReadIn[0];
-	std::size_t pos = name.find("_");
-	add(name.substr(0, pos), name.substr(pos + 1), std::stoi(dataReadIn[1]));
 }
