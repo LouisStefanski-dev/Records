@@ -77,7 +77,7 @@ void Bank::parseRecord(std::string record)
 	}
 	std::string name = dataReadIn[0];
 	std::size_t pos = name.find("_");
-	newList.add(name.substr(pos + 1), name.substr(0, pos), std::stoi(dataReadIn[1]));
+	newList.add(name.substr(pos + 1), name.substr(0, pos), stringToInt(dataReadIn[1]));
 }
 
 template <typename k, typename z>
@@ -192,4 +192,14 @@ void Bank::displayOutputInterface()
 	clearScreen();
 	std::cout << "ID               First Name               Last Name               "
 		"Activity status\n";
+}
+
+int Bank::stringToInt(std::string str)
+{
+	int returnVal = 0;
+	for (int i = 0; i < str.length(); i++)
+	{
+		returnVal = returnVal * 10 + str[i] - 48;
+	}
+	return returnVal;
 }

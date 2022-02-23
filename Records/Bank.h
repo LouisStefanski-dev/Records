@@ -17,6 +17,7 @@ public:
 	void printSpace(int spaces);
 	bool yorn(std::string prompt);
 	void displayOutputInterface();
+	int stringToInt(std::string str);
 private:
 	List newList;
 };
