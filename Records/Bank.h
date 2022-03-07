@@ -18,6 +18,7 @@ public:
 	bool yorn(std::string prompt);
 	void displayOutputInterface();
 	int stringToInt(std::string str);
+	void toLowerCase(std::string& input);
 private:
 	List newList;
 };

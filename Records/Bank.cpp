@@ -45,15 +45,15 @@ void Bank::displayAllRecords()
 		//16 spaces between
 		std::cout << newList.getRecord(i).recordId;
 		printSpace(13);
-		std::cout << newList.getRecord(i).firstName;
-
-		space = (15 - newList.getRecord(i).firstName.length()) + 10;
-		printSpace(space);
 		std::cout << newList.getRecord(i).lastName;
+
+		space = (12 - newList.getRecord(i).firstName.length()) + 10;
+		printSpace(space);
+		std::cout << newList.getRecord(i).firstName;
 
 		space = (15 - newList.getRecord(i).lastName.length()) + 9;
 		printSpace(space);
-		std::cout << newList.getRecord(i).recordActivityStatus << std::endl;
+		std::cout << ((newList.getRecord(i).recordActivityStatus) ? "Y" : "N") << std::endl;
 	}
 }
 
@@ -103,8 +103,9 @@ bool Bank::handleInput()
 		std::string firstname, lastname = "";
 		while (true)
 		{
+
 			getinput("customers first name: ", firstname);
-			if (firstname.length() != 0) { break; };
+			if (firstname.length() != 0) { break ; };
 		}
 		while (true)
 		{
@@ -170,6 +171,7 @@ bool Bank::yorn(std::string prompt)
 	while (true)
 	{
 		std::cin >> input;
+		toLowerCase(input);
 		if (input == "y") 
 		{ 
 			return true;
@@ -190,8 +192,8 @@ bool Bank::yorn(std::string prompt)
 void Bank::displayOutputInterface()
 {
 	clearScreen();
-	std::cout << "ID               First Name               Last Name               "
-		"Activity status\n";
+	std::cout << "ID               Last Name               First Name               "
+		"Activity status\n\n";
 }
 
 int Bank::stringToInt(std::string str)
@@ -202,4 +204,15 @@ int Bank::stringToInt(std::string str)
 		returnVal = returnVal * 10 + str[i] - 48;
 	}
 	return returnVal;
+}
+
+void Bank::toLowerCase(std::string& input)
+{
+	for (int i = 0; i < input.length(); i++)
+	{
+		if (input[i] < 91)
+		{
+			input[i] = input[i] + 32;
+		}
+	}
 }

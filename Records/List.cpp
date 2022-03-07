@@ -12,7 +12,28 @@ bool List::add(std::string firstName, std::string lastName, int recordId)
 		records[counter].recordId = recordId;
 	}
 	counter++;
+	sort();
 	return true;
+}
+
+void List::sort()
+{
+	for (int i = 0; i < counter; i++)
+	{
+		insert(i);
+	}
+	//     * OLD TEST CODE *
+	//int key, j;
+	//for (int i = 1; i < counter; i++)
+	//{
+	//	key = i;
+	//	j = i - 1;
+	//	while (j >= 0 && (records[j].getName() > records[key].getName()))
+	//	{
+	//		swap(j + 1, j--);
+	//	}
+	//	swap(j + 1, key);
+	//}
 }
 
 bool List::search(std::string name)
@@ -23,6 +44,21 @@ bool List::search(std::string name)
 bool List::search(int id)
 {
 	return search(id, 0, counter);
+}
+
+void List::insert(int i)
+{
+	if (i < 1)
+	{
+		return;
+	}
+
+	if (records[i - 1].getName() < records[i].getName())
+	{
+		return;
+	}
+	swap((i - 1), i);
+	insert(i - 1);
 }
 
 bool List::search(std::string name, int n1, int n2)

@@ -12,6 +12,6 @@ CustomerRecord::~CustomerRecord()
 
 std::string CustomerRecord::getName()
 {
-    std::string name = lastName + " " + firstName;
+    std::string name = lastName +  " " + firstName;
     return (name); //concatenates first + last name
 }
