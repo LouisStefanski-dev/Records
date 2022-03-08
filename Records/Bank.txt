@@ -1,0 +1,7 @@
+carpenter,aaron,1000
+carter,christian,1003
+cooper,allison,1002
+poridge,harriot,1005
+potter,allison,1006
+potter,harry,1001
+zelinski,becka,1004

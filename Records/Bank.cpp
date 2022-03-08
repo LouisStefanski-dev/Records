@@ -1,5 +1,6 @@
 #include "Bank.h"
 
+//reads records using standard ',' delimination
 bool Bank::readInRecords(std::string file) //uses ',' as a delimiter 
 {
 	std::ifstream dataFile(file);
@@ -17,6 +18,7 @@ bool Bank::readInRecords(std::string file) //uses ',' as a delimiter
 	return true;
 }
 
+//writes records from to indicated file
 bool Bank::writeRecordsToFile(std::string file)
 {
 	std::fstream dataFile(file);
@@ -29,7 +31,7 @@ bool Bank::writeRecordsToFile(std::string file)
 	for (int i = 0; i < newList.size(); i++)
 	{
 		record = newList.getRecord(i).getName();
-		record.at(record.find(" ")) = '_'; //replaces space with '_'
+		record.at(record.find(" ")) = ','; //replaces space with '_'
 		dataFile << record << "," << newList.getRecord(i).recordId << "\n";
 	}
 	dataFile.close();
@@ -39,21 +41,9 @@ bool Bank::writeRecordsToFile(std::string file)
 void Bank::displayAllRecords()
 {
 	displayOutputInterface();
-	int space = 0;
 	for (int i = 0; i < newList.size(); i++)
 	{
-		//16 spaces between
-		std::cout << newList.getRecord(i).recordId;
-		printSpace(13);
-		std::cout << newList.getRecord(i).lastName;
-
-		space = (12 - newList.getRecord(i).firstName.length()) + 10;
-		printSpace(space);
-		std::cout << newList.getRecord(i).firstName;
-
-		space = (15 - newList.getRecord(i).lastName.length()) + 9;
-		printSpace(space);
-		std::cout << ((newList.getRecord(i).recordActivityStatus) ? "Y" : "N") << std::endl;
+		displayRecord(i);
 	}
 }
 
@@ -62,35 +52,60 @@ void Bank::displayAllRecords()
 void Bank::parseRecord(std::string record)
 {
 	int posInArray = 0;
+	int pos = 0;
 	//length of array is the number of expected return values 
 	std::string dataReadIn[numOfExpectedReturnVals];
 	while (true)
 	{
-		if (record.find(",") == std::string::npos)
+		if (record.find(",") == std::string::npos) //covers i
 		{
 			dataReadIn[posInArray] = record.substr(0);
 			break;
 		};
-		dataReadIn[posInArray] = record.substr(0, record.find(","));
-		posInArray++;
+		pos = record.find(",");
+		dataReadIn[posInArray++] = record.substr(0, pos);
 		record = record.substr(record.find(",") + 1);
+		//id is covered by default above
 	}
-	std::string name = dataReadIn[0];
-	std::size_t pos = name.find("_");
-	newList.add(name.substr(pos + 1), name.substr(0, pos), stringToInt(dataReadIn[1]));
+	//last name comes first then first name, so firstNames pos is 1 
+	if (!newList.add(dataReadIn[1], dataReadIn[0], stringToInt(dataReadIn[2])))
+	{
+		std::cout << "Error adding record to file" << std::endl;
+	};
 }
 
+//takes a generic prompt and assigns response to a generic response of type z
 template <typename k, typename z>
-void Bank::getinput(k prompt, z& response)
+void Bank::getinput(k prompt, z& response) 
 {
 	std::cout << prompt;
 	std::cin >> response;
 }
 
+//displays a single record denoted by the record argument
+void Bank::displayRecord(int record)
+{
+	int space = 0;
+
+	//16 spaces between
+	std::cout << newList.getRecord(record).recordId;
+	printSpace(13);
+	std::cout << newList.getRecord(record).lastName;
+
+	space = (15 - newList.getRecord(record).lastName.length()) + 10;
+	printSpace(space);
+	std::cout << newList.getRecord(record).firstName;
+
+	space = (15 - newList.getRecord(record).firstName.length()) + 9;
+	printSpace(space);
+	std::cout << ((newList.getRecord(record).recordActivityStatus) ? "Y" : "N") << std::endl;
+}
+
+//displays input menu and handles responses from user approriately
 bool Bank::handleInput()
 {
-	int input = -1;
 	clearScreen();
+	int input = -1;
 	getinput("\n\n1. add new customer \n2. display all customers \n3. find customer(by id)\n4.find customer(by name)\n5.edit customer record\n\n0.quit\n: ", input);
 	switch (input)
 	{
@@ -101,21 +116,36 @@ bool Bank::handleInput()
 		//add customer input
 	{
 		std::string firstname, lastname = "";
-		while (true)
+		bool gotInput = false;
+		while (!gotInput)
 		{
 
 			getinput("customers first name: ", firstname);
-			if (firstname.length() != 0) { break ; };
+			toLowerCase(firstname);
+			if (firstname.length() != 0) { gotInput = true ; };
 		}
-		while (true)
+		gotInput = false;
+		while (!gotInput)
 		{
 			getinput("customers last name: ", lastname);
-			if (!(lastname.length() == 0)) { break; };
+			toLowerCase(lastname);
+			if (!(lastname.length() == 0)) { gotInput = true; };
 		}
-		newList.add(firstname, lastname);
+		
+		//make sure input is correct
+		clearScreen();
+		std::cout << "First name: " << firstname << "\nLast name: " << lastname << std::endl;
+		std::cout << "Is this information correct?\n: ";
+		std::string ans;
+		std::cin >> ans;
+		toLowerCase(ans);
+		if (ans == "y")
+		{
+			newList.add(firstname, lastname);
+		}
 		break;
 	}
-	case 2:
+	case 2: //disolay all records
 		displayAllRecords();
 		if (yorn("Are you done viewing the screen?"))
 		{
@@ -123,10 +153,18 @@ bool Bank::handleInput()
 		}
 	case 3: //search by id
 	{
-		int id;
+		int id, pos;
 		getinput("enter id: ", id);
-		std::cout << newList.search(id) << std::endl;
-		break;
+		displayOutputInterface();
+		pos = newList.search(id);
+		if (pos != -1)
+		{
+			displayRecord(pos);
+		}
+		if (yorn("Are you done looking at this screen?"))
+		{
+			break;
+		}
 	}
 	case 4: //search by name
 	{
@@ -134,13 +172,62 @@ bool Bank::handleInput()
 		std::cout << "enter name: ";
 		std::cin.ignore();
 		std::getline(std::cin, name);
-		std::cout << name << ":" << std::endl;
-		std::cout << newList.search(name) << std::endl;
-		break;
+		displayOutputInterface();
+		bool nameSearchFinished = false;
+		int record = -2; //-2 is an initial check for search operation
+		while (!nameSearchFinished)
+		{
+			record = (record == -2) ? newList.search(name, record) : newList.search(name, record+1);
+			if (record != -1)
+			{
+				displayRecord(record);
+			}
+			else if (record == -1)
+			{
+				nameSearchFinished = true;
+			}
+		}
+		if (yorn("Are you done looking at the screen? "))
+		{
+			break;
+		}
 	}
 	case 5:
-		//edit record
+	{
+		CustomerRecord tempRecord;
+		int recordId = -1;
+		std::string activityStatus;
+		std::string answer;
+		std::string firstName = "";
+		std::string lastName = "";
+		while (true)
+		{
+			getinput("What record would you like to edit?(ID)\n: ", recordId);
+			if (recordId >= 1000) { break; }
+			else { std::cout << "Please input a  proper ID\n"; };
+		}
+		while (firstName.length() == 0)
+		{
+			getinput("What is the first name?\n: ", answer);
+			toLowerCase(answer);
+			if (answer.length() > 0) { firstName = answer; };
+			answer = "";
+		}
+		while (lastName.length() == 0)
+		{
+			getinput("What is the last name?\n: ", answer);
+			toLowerCase(answer);
+			if (answer.length() > 0) { lastName = answer; };
+		}
+		while (true)
+		{
+			getinput("Is this user active still? (Y or N)?\n: ", activityStatus);
+			toLowerCase(activityStatus);
+			if (activityStatus == "n" || activityStatus == "y") { break; };
+		}
+		newList.add(firstName, lastName, recordId, (activityStatus == "y") ? true : false);
 		break;
+	}
 	default:
 		//when input is invalid
 		break;
@@ -148,6 +235,7 @@ bool Bank::handleInput()
 	return true;
 }
 
+//clears screen with 256 newlines
 void Bank::clearScreen()
 {
 	for (int i = 0; i < 256; i++)
@@ -156,6 +244,7 @@ void Bank::clearScreen()
 	}
 }
 
+//prints # of spaces indicated
 void Bank::printSpace(int spaces)
 {
 	for (int i = 0; i < spaces; i++)
@@ -164,6 +253,7 @@ void Bank::printSpace(int spaces)
 	}
 }
 
+//yes or no prompt returns true or false, format question in prompt argument
 bool Bank::yorn(std::string prompt)
 {
 	std::cout << prompt << "\n:";

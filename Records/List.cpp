@@ -1,17 +1,29 @@
 #include "List.h" 
 
-bool List::add(std::string firstName, std::string lastName, int recordId)
+bool List::add(std::string firstName, std::string lastName, int recordId, bool activityStatus)
 {
 	if (recordId == -1) { recordId = counter + 1000; }; //if name does not have an assigned record id the recordId given is counter + 1000
-	if (counter < recordsMaxSize)
+	
+	if ((search(recordId) != -1))
+	{
+		if (counter < recordsMaxSize)
+		{
+			int posOfRecord = search(recordId);
+			records[posOfRecord].firstName = firstName;
+			records[posOfRecord].lastName = lastName;
+			records[posOfRecord].recordActivityStatus = activityStatus;
+		}
+	}
+	else
 	{
 		//CustomerRecord* newCustomer = new CustomerRecord(firstName, lastName, recordId);
 		//records[counter] = newCustomer;
 		records[counter].firstName = firstName;
 		records[counter].lastName = lastName;
 		records[counter].recordId = recordId;
+		records[counter].recordActivityStatus = activityStatus;
+		counter++;
 	}
-	counter++;
 	sort();
 	return true;
 }
@@ -36,16 +48,6 @@ void List::sort()
 	//}
 }
 
-bool List::search(std::string name)
-{
-	return search(name, 0, counter);
-}
-
-bool List::search(int id)
-{
-	return search(id, 0, counter);
-}
-
 void List::insert(int i)
 {
 	if (i < 1)
@@ -61,43 +63,32 @@ void List::insert(int i)
 	insert(i - 1);
 }
 
-bool List::search(std::string name, int n1, int n2)
+//returns -1 if search fails, else returns index of name
+int List::search(std::string name, int n1)
 {
-	if ((n2 - n1) < 1)
+	if (counter == 0) { return -1; };
+	for (int i = n1; i < counter; i++)
 	{
-		return false;
+		if (name == records[i].lastName)
+		{
+			return i;
+		}
 	}
-
-	int mid = (n1 + n2) / 2;
-	if (records[mid].getName() == name)
-	{
-		return true;
-	}
-
-	if (records[mid].getName() > name)
-	{
-		return search(name, n1, mid);
-	}
-	return search(name, mid, n2);
+	return -1;
 }
 
-bool List::search(int id, int n1, int n2)
+//returns -1 if search fails, else returns index of id
+int List::search(int id)
 {
-	if ((n2 - n1) < 1)
+	if (counter == 0) { return -1; };
+	for (int i = 0; i < counter; i++)
 	{
-		return false;
+		if (id == records[i].recordId)
+		{
+			return i;
+		}
 	}
-
-	int mid = (n1 + n2) / 2;
-	if (records[mid].recordId == id)
-	{
-		return true;
-	}
-	if (records[mid].recordId > id)
-	{
-		return search(id, n1, mid);
-	}
-	search(id, mid, n2);
+	return -1;
 }
 
 void List::swap(int n1, int n2)

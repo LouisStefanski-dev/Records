@@ -19,6 +19,8 @@ public:
 	void displayOutputInterface();
 	int stringToInt(std::string str);
 	void toLowerCase(std::string& input);
+	void displayRecord(int record);
+
 private:
 	List newList;
 };
